@@ -12,11 +12,7 @@ class Clip{
 		this.ctx = null;
 
 		this.start = start;
-		if(end > start)
-			this.end = end;
-		else{
-			this.end = this.vid.end;
-		}	
+		this.end = end;	
 		
 		this.x = x;
 		this.y = y;
