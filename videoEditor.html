@@ -75,7 +75,6 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 	var c = document.getElementById("myCanvas");
 	var ctx = c.getContext("2d");
 	
-	
 	//load existing json fil
 	function openJson(input)
 	{
@@ -273,9 +272,12 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 	//this is going to be the background context, each video has its own
 	//var currentVid = null;
 	var timeVar;
+	var skipScale = 1.0;
 
 	function play()
 	{	
+		skipScale = 1.0;
+		c.style.border = 1;
 		stopAll();
 		c.requestFullscreen();
 
@@ -361,11 +363,11 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 				xScale = clip.scale*video.w/video.h;
 			
 			if(video.rotation > 0){
-				video.ctx.drawImage(video.vid,clip.x,clip.y,c.width*xScale,c.height*yScale);
-				ctx.drawImage(video.canvas,0,0,c.width,c.height);
+				video.ctx.drawImage(video.vid,0,0,c.width*xScale,c.height*yScale);
+				ctx.drawImage(video.canvas,clip.x*skipScale,clip.y*skipScale,c.width*skipScale,c.height*skipScale);
 			}
 			else	
-				ctx.drawImage(video.vid,clip.x,clip.y,c.width*xScale,c.height*yScale);
+				ctx.drawImage(video.vid,clip.x*skipScale,clip.y*skipScale,c.width*xScale*skipScale,c.height*yScale*skipScale);
 
 			
 			if(clip.intro != 0 && video.vid.currentTime > clip.intro){
@@ -374,7 +376,7 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 					ctx.globalAlpha = video.vid.currentTime - clip.intro;
 				else
 					ctx.globalAlpha = localAlpha;
-				ctx.drawImage(clip.canvas,0,0,c.width,c.height);		
+				ctx.drawImage(clip.canvas,0,0,c.width*skipScale,c.height*skipScale);		
 				ctx.globalAlpha = localAlpha;
 			}
 			
@@ -439,10 +441,10 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 				if(video[i].rotation > 0)
 				{
 					video[i].ctx.drawImage(video[i].vid,0,0,c.width*xScale,c.height*yScale);
-					ctx.drawImage(video[i].canvas,clip.x[i],clip.y[i],video[i].canvas.width,video[i].canvas.height);				
+					ctx.drawImage(video[i].canvas,clip.x[i]*skipScale,clip.y[i]*skipScale,video[i].canvas.width*skipScale,video[i].canvas.height*skipScale);				
 				}
 				else
-					ctx.drawImage(video[i].vid,clip.x[i],clip.y[i],c.width*xScale,c.height*yScale);				
+					ctx.drawImage(video[i].vid,clip.x[i]*skipScale,clip.y[i]*skipScale,c.width*xScale*skipScale,c.height*yScale*skipScale);				
 			}
 		}
 		if(endCount == video.length)
@@ -486,22 +488,14 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 		}
 				
 		stopAll();
-		c.width = 480;
-		c.height = 270;
-		
-		for(let i=0;i<lecture.videos.length;i++){
-			if(lecture.videos[i].canvas != null)
-			{
-				lecture.videos[i].canvas.width = c.width;
-				lecture.videos[i].canvas.height = c.height;
-				
-				lecture.videos[i].ctx.translate(c.width/2,c.height/2);
-				lecture.videos[i].ctx.rotate(lecture.videos[i].rotation*Math.PI/180);
-				lecture.videos[i].ctx.translate(-c.width/2,-c.height/2);
 
-			}
-		}
+		skipScale = 0.25;
+		ctx.strokeStyle = "black";
+		ctx.rect(0,0,c.width*skipScale,c.height*skipScale);
+		ctx.stroke();
 		
+		c.style.border = 0;
+				
 		startNew(input);	
 		
 	}
