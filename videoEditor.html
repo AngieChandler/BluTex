@@ -46,6 +46,8 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 		<tr id="controls">
 			<td>
 				<button type = "button" onClick="play()">Play</button>
+				<button type = "button" onClick="stopAll()">Stop</button>
+<!--				<button type = "button" onClick="pause()">Pause</button> -->
 			</td>
 			<td>
 				<select id="clipName">
@@ -53,6 +55,8 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 				<input type="text" id="skipTime" name="skipTime" value="0"><br><br>					
 			
 				<button type = "button" onClick="skipToTime()">Skip</button>			
+				<button type = "button" onClick="stopAll()">Stop</button>
+<!--				<button type = "button" onClick="pause(true)">Pause</button> -->
 			</td>
 		</tr>
 	</table>
@@ -273,7 +277,8 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 	//var currentVid = null;
 	var timeVar;
 	var skipScale = 1.0;
-
+	//var currentNo = 0;
+	
 	function play()
 	{	
 		skipScale = 1.0;
@@ -289,6 +294,8 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 	
 	function startNew(input=0)
 	{
+		//currentNo = input;
+	
 		//multiple videos in this clip
 		if(lecture.list[input].multi){
 			let currentVid = [];
@@ -516,6 +523,33 @@ videoEditor - intended to be the final version - unnecessary UI elements are rem
 		ctx.clearRect(0,0,c.width,c.height);
 	}
 		
+	
+	function pause()
+	{
+		let clip = lecture.list[currentNo];
+		console.log("Pausing "+clip.name);
+		
+		if(clip.multi){
+			for(let i=0;i<clip.vid.length;i++){
+				let video = findVid(clip.vid[i]);
+				
+				if(video.vid.paused)
+					video.vid.play();
+				else
+					video.vid.pause();
+			
+			}
+		}
+		else{
+			let video = findVid(clip.vid);
+
+			if(video.vid.paused)
+				video.vid.play();
+			else
+				video.vid.pause();			
+			
+		}
+	}
 
 	</script>
 	
